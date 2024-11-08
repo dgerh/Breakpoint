@@ -1,5 +1,74 @@
 #include "main.h"
 #include "Scene/Geometry.h"
+#include "Support/directx/d3dx12.h"
+
+void setupGravityComputePipeline(ComputePipeline &pipeline, DXContext &context, unsigned int instanceCount, std::vector<XMFLOAT3> &initialPositions) {
+    // Define root parameters for the compute shader
+    std::vector<D3D12_ROOT_PARAMETER> rootParameters;
+
+    // Descriptor table for SRV (input) and UAV (output)
+    D3D12_DESCRIPTOR_RANGE srvUavRange[2];
+    srvUavRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    srvUavRange[0].NumDescriptors = 1;
+    srvUavRange[0].BaseShaderRegister = 0;
+
+    srvUavRange[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    srvUavRange[1].NumDescriptors = 1;
+    srvUavRange[1].BaseShaderRegister = 0;
+
+    D3D12_ROOT_PARAMETER srvUavTable = {};
+    srvUavTable.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    srvUavTable.DescriptorTable.NumDescriptorRanges = _countof(srvUavRange);
+    srvUavTable.DescriptorTable.pDescriptorRanges = srvUavRange;
+    srvUavTable.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    rootParameters.push_back(srvUavTable);
+
+    // CBV for ParticleParams
+    D3D12_ROOT_PARAMETER cbvParam = {};
+    cbvParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+    cbvParam.Descriptor.ShaderRegister = 0;
+    cbvParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    rootParameters.push_back(cbvParam);
+
+    // Create root signature and descriptor heap
+    pipeline.CreateRootSignature(context.getDevice(), rootParameters);
+    pipeline.CreateDescriptorHeap(context.getDevice(), 2); // 1 SRV, 1 UAV
+
+    // Create input position buffer (SRV) on GPU
+
+    CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_UPLOAD);
+    ComPtr<ID3D12Resource> positionBuffer;
+    D3D12_RESOURCE_DESC bufferDesc = CD3DX12_RESOURCE_DESC::Buffer(instanceCount * sizeof(XMFLOAT3));
+    context.getDevice()->CreateCommittedResource(
+        &heapProps,
+        D3D12_HEAP_FLAG_NONE,
+        &bufferDesc,
+        D3D12_RESOURCE_STATE_GENERIC_READ,
+        nullptr,
+        IID_PPV_ARGS(&positionBuffer)
+    );
+
+    // Map and copy initial positions
+    CD3DX12_HEAP_PROPERTIES uploadProps(D3D12_HEAP_TYPE_DEFAULT);
+    UINT8* positionData;
+    positionBuffer->Map(0, nullptr, reinterpret_cast<void**>(&positionData));
+    memcpy(positionData, initialPositions.data(), initialPositions.size() * sizeof(XMFLOAT3));
+    positionBuffer->Unmap(0, nullptr);
+
+    // Create output model matrix buffer (UAV) on GPU
+    ComPtr<ID3D12Resource> modelMatrixBuffer;
+    bufferDesc = CD3DX12_RESOURCE_DESC::Buffer(instanceCount * sizeof(XMFLOAT4X4));
+    context.getDevice()->CreateCommittedResource(
+        &uploadProps,
+        D3D12_HEAP_FLAG_NONE,
+        &bufferDesc,
+        D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+        nullptr,
+        IID_PPV_ARGS(&modelMatrixBuffer)
+    );
+}
 
 int main() {
     DebugLayer debugLayer = DebugLayer();
@@ -18,17 +87,31 @@ int main() {
 
     mouse->SetWindow(Window::get().getHWND());
 
+    // Define gravity and delta time constants
+    float gravity = 9.8f;
+    float deltaTime = 0.016f; // assuming ~60 FPS
+
     //pass triangle data to gpu, get vertex buffer view
-    int instanceCount = 8;
+    unsigned int instanceCount = 8;
 
     // Create Test Model Matrices
     std::vector<XMFLOAT4X4> modelMatrices;
-    // Populate modelMatrices with transformation matrices for each instance
+    //// Populate modelMatrices with transformation matrices for each instance
     for (int i = 0; i < instanceCount; ++i) {
         XMFLOAT4X4 model;
         XMStoreFloat4x4(&model, XMMatrixTranslation(i * 0.2f, i * 0.2f, i * 0.2f)); // Example transformation
         modelMatrices.push_back(model);
     }
+
+    // Input buffer: initial positions for each instance
+    std::vector<XMFLOAT3> initialPositions(instanceCount);
+    for (int i = 0; i < instanceCount; ++i) {
+        initialPositions[i] = XMFLOAT3(i * 0.2f, 0.0f, 0.0f); // Example initial positions
+    }
+
+	// Setup compute pipeline
+    ComputePipeline computePipeline(context.getDevice(), L"ParticleComputeShader.cso");
+	//setupGravityComputePipeline(computePipeline, context, instanceCount, initialPositions);
 
 	// Create circle geometry
 	auto circleData = generateCircle(0.05f, 32);

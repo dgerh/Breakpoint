@@ -18,12 +18,12 @@ RenderPipeline::RenderPipeline(std::string vertexShaderName, std::string fragSha
 	}
 }
 
-ComPointer<ID3D12RootSignature>& RenderPipeline::getRootSignature()
+ComPointer<ID3D12RootSignature> RenderPipeline::getRootSignature()
 {
 	return this->rootSignature;
 }
 
-ComPointer<ID3D12DescriptorHeap>& RenderPipeline::getSrvHeap()
+ComPointer<ID3D12DescriptorHeap> RenderPipeline::getSrvHeap()
 {
 	return this->srvHeap;
 }

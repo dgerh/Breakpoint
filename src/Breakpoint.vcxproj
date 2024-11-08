@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D\ComputePipeline.cpp" />
     <ClCompile Include="D3D\DXContext.cpp" />
     <ClCompile Include="D3D\IndexBuffer.cpp" />
     <ClCompile Include="D3D\ModelMatrixBuffer.cpp" />
@@ -23,6 +24,7 @@
     <ClCompile Include="Support\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="D3D\ComputePipeline.h" />
     <ClInclude Include="D3D\DXContext.h" />
     <ClInclude Include="D3D\IndexBuffer.h" />
     <ClInclude Include="D3D\RenderPipeline.h" />
@@ -39,6 +41,9 @@
     <ClInclude Include="Support\WinInclude.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shaders\ParticleComputeShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shaders\PixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -118,8 +123,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d12.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;dxguid.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+      <DisableOptimizations>false</DisableOptimizations>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

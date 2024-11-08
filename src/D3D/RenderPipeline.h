@@ -10,8 +10,8 @@ public:
 	RenderPipeline() = delete;
 	RenderPipeline(std::string vertexShaderName, std::string fragShaderName, std::string rootSignatureShaderName, DXContext& context);
 
-	ComPointer<ID3D12RootSignature>& getRootSignature();
-	ComPointer<ID3D12DescriptorHeap>& getSrvHeap();
+	ComPointer<ID3D12RootSignature> getRootSignature();
+	ComPointer<ID3D12DescriptorHeap> getSrvHeap();
 
 	Shader& getVertexShader() { return vertexShader; }
 	Shader& getFragmentShader() { return fragShader; }
