@@ -35,6 +35,7 @@ void setupGravityComputePipeline(ComputePipeline &pipeline, DXContext &context, 
     // Create root signature and descriptor heap
     pipeline.CreateRootSignature(context.getDevice(), rootParameters);
     pipeline.CreateDescriptorHeap(context.getDevice(), 2); // 1 SRV, 1 UAV
+    pipeline.LoadComputeShader(context.getDevice());
 
     // Create input position buffer (SRV) on GPU
 
@@ -110,8 +111,8 @@ int main() {
     }
 
 	// Setup compute pipeline
-    ComputePipeline computePipeline(context.getDevice(), L"ParticleComputeShader.cso");
-	//setupGravityComputePipeline(computePipeline, context, instanceCount, initialPositions);
+    ComputePipeline computePipeline(context.getDevice(), "ParticleComputeShader.cso");
+	setupGravityComputePipeline(computePipeline, context, instanceCount, initialPositions);
 
 	// Create circle geometry
 	auto circleData = generateCircle(0.05f, 32);
@@ -140,7 +141,6 @@ int main() {
     barriers[1].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
 	cmdList->ResourceBarrier(2, barriers);
-
     RenderPipeline basicPipeline("VertexShader.cso", "PixelShader.cso", "RootSignature.cso", context);
 
     // === Create root signature ===

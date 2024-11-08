@@ -1,9 +1,13 @@
 #include "ComputePipeline.h"
 #include <d3dcompiler.h>
 #include <stdexcept>
+#include <comdef.h>
+#include <iostream>
 
-ComputePipeline::ComputePipeline(ID3D12Device* device, const std::wstring& computeShaderPath) {
-    LoadComputeShader(device, computeShaderPath);
+ComputePipeline::ComputePipeline(ID3D12Device* device, const std::string& computeShaderPath) : 
+    computeShader(computeShaderPath)
+{
+    //LoadComputeShader(device);
 }
 
 ComputePipeline::~ComputePipeline() {
@@ -11,6 +15,7 @@ ComputePipeline::~ComputePipeline() {
 }
 
 void ComputePipeline::CreateRootSignature(ID3D12Device* device, const std::vector<D3D12_ROOT_PARAMETER>& rootParameters) {
+
     D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
     rootSignatureDesc.NumParameters = static_cast<UINT>(rootParameters.size());
     rootSignatureDesc.pParameters = rootParameters.data();
@@ -29,18 +34,14 @@ void ComputePipeline::CreateRootSignature(ID3D12Device* device, const std::vecto
     }
 }
 
-void ComputePipeline::LoadComputeShader(ID3D12Device* device, const std::wstring& computeShaderPath) {
-    ComPtr<ID3DBlob> computeShaderBlob;
-    HRESULT hr = D3DReadFileToBlob(computeShaderPath.c_str(), &computeShaderBlob);
-    if (FAILED(hr)) {
-        throw std::runtime_error("Failed to read compute shader file.");
-    }
-
+void ComputePipeline::LoadComputeShader(ID3D12Device* device) {
     D3D12_COMPUTE_PIPELINE_STATE_DESC psoDesc = {};
     psoDesc.pRootSignature = rootSignature.Get();
-    psoDesc.CS = { computeShaderBlob->GetBufferPointer(), computeShaderBlob->GetBufferSize() };
-    hr = device->CreateComputePipelineState(&psoDesc, IID_PPV_ARGS(&pipelineState));
+    psoDesc.CS = { computeShader.getBuffer(), computeShader.getSize()};
+    HRESULT hr = device->CreateComputePipelineState(&psoDesc, IID_PPV_ARGS(&pipelineState));
     if (FAILED(hr)) {
+        _com_error err(hr);
+        std::wcerr << L"Failed to create compute pipeline state: " << err.ErrorMessage() << std::endl;
         throw std::runtime_error("Failed to create compute pipeline state.");
     }
 }

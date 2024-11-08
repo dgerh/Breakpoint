@@ -4,19 +4,20 @@
 #include <wrl.h>
 #include <vector>
 #include <string>
+#include "Support/Shader.h"
 
 using Microsoft::WRL::ComPtr;
 
 class ComputePipeline {
 public:
-    ComputePipeline(ID3D12Device* device, const std::wstring& computeShaderPath);
+    ComputePipeline(ID3D12Device* device, const std::string& computeShaderPath);
     ~ComputePipeline();
 
     // Initialize root signature with custom root parameters
     void CreateRootSignature(ID3D12Device* device, const std::vector<D3D12_ROOT_PARAMETER>& rootParameters);
 
     // Load the compute shader from file
-    void LoadComputeShader(ID3D12Device* device, const std::wstring& computeShaderPath);
+    void LoadComputeShader(ID3D12Device* device);
 
     // Create a descriptor heap for SRV/UAV resources
     void CreateDescriptorHeap(ID3D12Device* device, UINT descriptorCount);
@@ -40,4 +41,6 @@ private:
 
     std::vector<ComPtr<ID3D12Resource>> constantBuffers; // Store all constant buffers
     std::vector<UINT8*> constantBufferData; // Mapped CPU-accessible data pointers
+
+	Shader computeShader;
 };
