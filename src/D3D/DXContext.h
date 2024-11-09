@@ -10,7 +10,7 @@ public:
     ~DXContext();
 
     void signalAndWait();
-    ID3D12GraphicsCommandList5* initCommandList();
+    ID3D12GraphicsCommandList6* initCommandList();
     void executeCommandList();
 
     void flush(size_t count);
@@ -26,7 +26,7 @@ private:
 
     ComPointer<ID3D12CommandQueue> cmdQueue;
     ComPointer<ID3D12CommandAllocator> cmdAllocator;
-    ComPointer<ID3D12GraphicsCommandList5> cmdList;
+    ComPointer<ID3D12GraphicsCommandList6> cmdList;
 
     ComPointer<ID3D12Fence1> fence;
     UINT64 fenceValue = 0;

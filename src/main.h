@@ -8,12 +8,10 @@
 #include "Debug/DebugLayer.h"
 
 #include "D3D/DXContext.h"
-#include "D3D/RenderPipelineHelper.h"
-#include "D3D/RenderPipeline.h"
+#include "D3D/Pipeline/RenderPipeline.h"
+#include "D3D/Pipeline/MeshPipeline.h"
 #include "D3D/VertexBuffer.h"
 #include "D3D/IndexBuffer.h"
 #include "D3D/StructuredBuffer.h"
 
 #include "Scene/Camera.h"
-
-

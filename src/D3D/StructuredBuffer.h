@@ -4,7 +4,7 @@
 #include "Support/WinInclude.h"
 #include "Support/ComPointer.h"
 #include "D3D/DXContext.h"
-#include "D3D/RenderPipeline.h"
+#include "D3D/Pipeline/Pipeline.h"
 #include "DirectXMath.h"
 
 using namespace DirectX;
