@@ -7,12 +7,15 @@
 #include <WICTextureLoader.h>
 #include <ResourceUploadBatch.h>
 
+#include <iostream>
+#include <filesystem>
+
 using namespace DirectX;
 
 class Texture {
 public:
 	Texture() = delete;
-	Texture(DXContext& context, UINT width, UINT height);
+	Texture(DXContext& context, UINT width, UINT height, std::string texName);
 	~Texture() = default; //make sure to release resources later
 
 private:

@@ -44,7 +44,7 @@ int main() {
     unsigned int renderMeshlets = 0;
     unsigned int renderMode = 0;
 
-    //Texture myDemoTexture{ context, 1920, 1080 };
+    Texture myDemoTexture{ context, 1920, 1080, "smiley.jpg"};
 
     while (!Window::get().getShouldClose()) {
         //update window
