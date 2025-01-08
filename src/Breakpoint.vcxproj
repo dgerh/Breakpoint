@@ -19,6 +19,7 @@
     <ClCompile Include="D3D\Pipeline\Pipeline.cpp" />
     <ClCompile Include="D3D\Pipeline\RenderPipeline.cpp" />
     <ClCompile Include="D3D\Pipeline\MeshPipeline.cpp" />
+    <ClCompile Include="D3D\Texture.cpp" />
     <ClCompile Include="D3D\VertexBuffer.cpp" />
     <ClCompile Include="Debug\DebugLayer.cpp" />
     <ClCompile Include="ImGUI\backends\imgui_impl_dx12.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="D3D\Pipeline\MeshPipeline.h" />
     <ClInclude Include="D3D\Pipeline\RenderPipeline.h" />
     <ClInclude Include="D3D\Pipeline\Pipeline.h" />
+    <ClInclude Include="D3D\Texture.h" />
     <ClInclude Include="D3D\VertexBuffer.h" />
     <ClInclude Include="Debug\DebugLayer.h" />
     <ClInclude Include="ImGUI\backends\imgui_impl_dx12.h" />
@@ -214,7 +216,7 @@
     </FxCompile>
     <FxCompile Include="Shaders\pbmpmShaders\PBMPMPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-	<ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.5</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.5</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.5</ShaderModel>
     </FxCompile>
