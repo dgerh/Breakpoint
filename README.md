@@ -401,7 +401,9 @@ Lastly, there is a toggle to see the meshlets in the mesh shader, or toon shadin
 
 ## Position Based Material Point Method Performance
 
-There are a number of parameters that affect how PBMPM performs, due to the complexity of the simulation algorithm. The following is a list of performance tests for PBMPM, analyzing the various parameters and attributes of the particle simulation. For the setup, unless otherwise stated the simulation parameters are as shown above in the demonstration of the ImGUI toggles. To isolate the performance of PBMPM as much as possible, mesh shading was not on for these tests and particles were rendered as unlit low resolution spheres. These tests were performed in release mode on a personal laptop with Windows 23H2, an AMD Ryzen 9 7940HS @ 4GHz 32GB, and a RTX 3070 8 GB.
+There are a number of parameters that affect how PBMPM performs, due to the complexity of the simulation algorithm. The following is a list of performance tests for PBMPM, analyzing the various parameters and attributes of the particle simulation. For the setup, unless otherwise stated the simulation parameters are as shown above in the demonstration of the ImGUI toggles. To isolate the performance of PBMPM as much as possible, mesh shading was not on for these tests and particles were rendered as unlit low resolution spheres. 
+
+The iteration count, subset count, and particle count tests were performed in release mode on a personal laptop with Windows 10 Pro, Ryzen 9 5900X 12 Core @ 3.7GHz 32GB, RTX 3070 8GB. The remainder of the PBMPM tests were performed in release mode on a personal laptop with Windows 23H2, an AMD Ryzen 9 7940HS @ 4GHz 32GB, and a RTX 4070 8 GB.
 
 The primary 2 are the iteration count and substep count. The substep count runs bukkiting and emission as well as g2p2g for each update within a frame. The iteration count is a subroutine of substep count that determines how many times g2p2g is run within each substep. The two of these have major impacts on performance.
 
@@ -409,7 +411,7 @@ The primary 2 are the iteration count and substep count. The substep count runs 
   <img src="app/image/itercount.png" alt="itercount" />
 </p>
 
-For this test, we used a scene of 50,000 fluid particles. These parameters, along with many others that are tied to the simulation, are at the user's discretion to choose between performance, stability, and accuracy. Having a higher iteration and substep count will increase the stability and accuracy at the cost of performance. A nice sweet spot is what we used for our basic testing setup.
+For this test, we used a scene of 107,217 fluid particles (from a 20 x 20 x 20 inital spawning volume). These parameters, along with many others that are tied to the simulation, are at the user's discretion to choose between performance, stability, and accuracy. Having a higher iteration and substep count will increase the stability and accuracy at the cost of performance. A nice sweet spot is what we used for our basic testing setup.
 
 <p align="center">
   <img src="app/image/particlecount.png" alt="particlecount" />

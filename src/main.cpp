@@ -1,6 +1,14 @@
 #include "main.h"
 
 int main() {
+    //initialize for texture loading
+    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    if (FAILED(hr)) {
+        std::cout << "could not initialize for texture loading\n";
+        Window::get().shutdown();
+        return false;
+    }
+
     //set up DX, window, keyboard mouse
     DebugLayer debugLayer = DebugLayer();
     DXContext context = DXContext();
@@ -34,6 +42,8 @@ int main() {
     PBMPMConstants pbmpmIterConstants = pbmpmCurrConstants;
 
     unsigned int renderOptions = 0;
+
+    //Texture myDemoTexture{ context, 1920, 1080 };
 
     while (!Window::get().getShouldClose()) {
         //update window
