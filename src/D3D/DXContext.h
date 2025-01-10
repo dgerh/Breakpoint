@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <array>
 
-#define NUM_CMDLISTS 55
+#define NUM_CMDLISTS 56
 enum CommandListID {
     OBJECT_RENDER_WIRE_ID,
     OBJECT_RENDER_SOLID_ID,
