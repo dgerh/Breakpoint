@@ -23,4 +23,5 @@ void Pipeline::releaseResources()
 {
 	rootSignature.Release();
 	descriptorHeap.releaseResources();
+	pso.Release();
 }
