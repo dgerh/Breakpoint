@@ -3,6 +3,8 @@
 #include "ObjectScene.h"
 #include "PBMPMScene.h"
 #include "MeshShadingScene.h"
+#include "FluidScene.h"
+#include "ScreenQuad.h"
 #include "../D3D/Pipeline/RenderPipeline.h"
 #include "../D3D/Pipeline/ComputePipeline.h"
 #include "../D3D/Pipeline/MeshPipeline.h"
@@ -20,6 +22,7 @@ public:
 	MeshPipeline* getSandMeshPipeline();
 	MeshPipeline* getViscoMeshPipeline();
 	//MeshPipeline* getSnowMeshPipeline();
+	RenderPipeline* getScreenQuadPipeline();
 
 	void compute(float isMeshShading = false);
 	void drawPBMPM();
@@ -31,6 +34,7 @@ public:
 	void drawGrid();
 	void drawSpawners();
 	void drawSolidObjects();
+	void drawScreenQuad();
 
 	void releaseResources();
 
@@ -134,6 +138,9 @@ private:
 	ComputePipeline snowBufferClearCP;
 	MeshPipeline snowMeshPipeline;
 	MeshShadingScene snowScene;*/
+
+	RenderPipeline screenQuadRP;
+	ScreenQuad screenQuad;
 
 	RenderPipeline* currentRP;
 	ComputePipeline* currentCP;

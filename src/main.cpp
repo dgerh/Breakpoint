@@ -2,12 +2,12 @@
 
 int main() {
     //initialize for texture loading
-    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    /*HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     if (FAILED(hr)) {
         std::cout << "could not initialize for texture loading\n";
         Window::get().shutdown();
         return false;
-    }
+    }*/
 
     //set up DX, window, keyboard mouse
     DebugLayer debugLayer = DebugLayer();
@@ -113,8 +113,10 @@ int main() {
 		//auto snowMeshPipeline = scene.getSnowMeshPipeline();
         auto objectWirePipeline = scene.getObjectWirePipeline();
         auto objectSolidPipeline = scene.getObjectSolidPipeline();
+		auto screenQuadPipeline = scene.getScreenQuadPipeline();
         //whichever pipeline renders first should begin and end the frame
-        auto firstPipeline = objectWirePipeline;
+        //auto firstPipeline = objectWirePipeline;
+		auto firstPipeline = screenQuadPipeline;
 
         //begin frame
         Window::get().beginFrame(firstPipeline->getCommandList());
@@ -135,6 +137,12 @@ int main() {
         Window::get().setViewport(vp, objectSolidPipeline->getCommandList());
         scene.drawSolidObjects();
         context.executeCommandList(objectSolidPipeline->getCommandListID());
+        
+        //full screen render pass
+        Window::get().setRT(screenQuadPipeline->getCommandList());
+        Window::get().setViewport(vp, screenQuadPipeline->getCommandList());
+        scene.drawScreenQuad();
+        context.executeCommandList(screenQuadPipeline->getCommandListID());
 
         //particles + imgui render pass
         Window::get().setRT(renderPipeline->getCommandList());
@@ -244,6 +252,7 @@ int main() {
 		}*/
         context.resetCommandList(objectWirePipeline->getCommandListID());
         context.resetCommandList(objectSolidPipeline->getCommandListID());
+		context.resetCommandList(screenQuadPipeline->getCommandListID());
     }
 
     // Scene should release all resources, including their pipelines

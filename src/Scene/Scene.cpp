@@ -122,6 +122,10 @@ Scene::Scene(Camera* p_camera, DXContext* context)
 	snowScene(context, &snowRP, &snowBilevelUniformGridCP, &snowSurfaceBlockDetectionCP, &snowSurfaceCellDetectionCP, &snowSurfaceVertexCompactionCP,
 		&snowSurfaceVertexDensityCP, &snowSurfaceVertexNormalCP, &snowBufferClearCP, &snowMeshPipeline, 4, 0.010, 7.6, 1.010),*/
 	
+	fluidScene(context, &fluidRP, &bilevelUniformGridCP, &surfaceBlockDetectionCP, &surfaceCellDetectionCP, &surfaceVertexCompactionCP, &surfaceVertexDensityCP, &surfaceVertexNormalCP, &bufferClearCP, &fluidMeshPipeline),
+	screenQuadRP("ScreenQuadVertexShader.cso", "ScreenQuadPixelShader.cso", "ScreenQuadRootSignature.cso", *context, CommandListID::SCREEN_QUAD_RENDER_ID,
+		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE),
+	screenQuad(context, &screenQuadRP),
 	currentRP(),
 	currentCP()
 {}
@@ -157,6 +161,11 @@ MeshPipeline* Scene::getViscoMeshPipeline() {
 //MeshPipeline* Scene::getSnowMeshPipeline() {
 //	return &snowMeshPipeline;
 //}
+
+RenderPipeline* Scene::getScreenQuadPipeline()
+{
+	return &screenQuadRP;
+}
 
 void Scene::compute(float isMeshShading) {
 	pbmpmScene.compute();
@@ -229,6 +238,11 @@ void Scene::drawSpawners() {
 
 void Scene::drawSolidObjects() {
 	objectSceneSolid.draw(camera);
+}
+
+void Scene::drawScreenQuad()
+{
+	screenQuad.draw();
 }
 
 void Scene::releaseResources() {

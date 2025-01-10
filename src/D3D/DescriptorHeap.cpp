@@ -53,6 +53,6 @@ unsigned int DescriptorHeap::GetNextAvailableIndex()
 
 unsigned int DescriptorHeap::GetDescriptorSize()
 {
-	return 0;
+	return descriptorSize;
 }
 
