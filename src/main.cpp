@@ -43,7 +43,7 @@ int main() {
 
     unsigned int renderOptions = 0;
 
-    Texture myDemoTexture{ context, 1920, 1080, "smiley.jpg"};
+    Texture myDemoTexture(context, 1920, 1080, "smiley.jpg" );
 
     while (!Window::get().getShouldClose()) {
         //update window
