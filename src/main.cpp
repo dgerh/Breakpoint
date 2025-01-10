@@ -2,12 +2,12 @@
 
 int main() {
     //initialize for texture loading
-    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    /*HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     if (FAILED(hr)) {
         std::cout << "could not initialize for texture loading\n";
         Window::get().shutdown();
         return false;
-    }
+    }*/
 
     //set up DX, window, keyboard mouse
     DebugLayer debugLayer = DebugLayer();
@@ -106,12 +106,14 @@ int main() {
         scene.compute(renderMode != 2);
 
         //get pipelines
-        auto renderPipeline = scene.getPBMPMRenderPipeline();
-        auto meshPipeline = scene.getFluidMeshPipeline();
+        auto particlesPipeline = scene.getPBMPMRenderPipeline();
+        auto meshShadingPipeline = scene.getFluidMeshPipeline();
         auto objectWirePipeline = scene.getObjectWirePipeline();
         auto objectSolidPipeline = scene.getObjectSolidPipeline();
+		auto screenQuadPipeline = scene.getScreenQuadPipeline();
         //whichever pipeline renders first should begin and end the frame
-        auto firstPipeline = objectWirePipeline;
+        //auto firstPipeline = objectWirePipeline;
+		auto firstPipeline = screenQuadPipeline;
 
         //begin frame
         Window::get().beginFrame(firstPipeline->getCommandList());
@@ -131,17 +133,23 @@ int main() {
         Window::get().setViewport(vp, objectSolidPipeline->getCommandList());
         scene.drawSolidObjects();
         context.executeCommandList(objectSolidPipeline->getCommandListID());
+        
+        //full screen render pass
+        Window::get().setRT(screenQuadPipeline->getCommandList());
+        Window::get().setViewport(vp, screenQuadPipeline->getCommandList());
+        scene.drawScreenQuad();
+        context.executeCommandList(screenQuadPipeline->getCommandListID());
 
         //particles + imgui render pass
-        Window::get().setRT(renderPipeline->getCommandList());
-        Window::get().setViewport(vp, renderPipeline->getCommandList());
+        Window::get().setRT(particlesPipeline->getCommandList());
+        Window::get().setViewport(vp, particlesPipeline->getCommandList());
         scene.drawPBMPM(renderMode);
 
         //mesh render pass
-        Window::get().setRT(meshPipeline->getCommandList());
-        Window::get().setViewport(vp, meshPipeline->getCommandList());
+        Window::get().setRT(meshShadingPipeline->getCommandList());
+        Window::get().setViewport(vp, meshShadingPipeline->getCommandList());
         if (renderMode != 2) scene.drawFluid(renderMeshlets);
-        context.executeCommandList(meshPipeline->getCommandListID());
+        context.executeCommandList(meshShadingPipeline->getCommandListID());
 
         //set up ImGUI for frame
         ImGui_ImplDX12_NewFrame();
@@ -163,19 +171,20 @@ int main() {
             pbmpmCurrConstants = pbmpmIterConstants;
         }
 
-        renderPipeline->getCommandList()->SetDescriptorHeaps(1, &imguiSRVHeap);
-        ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), renderPipeline->getCommandList());
+        particlesPipeline->getCommandList()->SetDescriptorHeaps(1, &imguiSRVHeap);
+        ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), particlesPipeline->getCommandList());
 
-        context.executeCommandList(renderPipeline->getCommandListID());
+        context.executeCommandList(particlesPipeline->getCommandListID());
 
         //end frame
         Window::get().endFrame(firstPipeline->getCommandList());
 
         Window::get().present();
-		context.resetCommandList(renderPipeline->getCommandListID());
-        context.resetCommandList(meshPipeline->getCommandListID());
+		context.resetCommandList(particlesPipeline->getCommandListID());
+        context.resetCommandList(meshShadingPipeline->getCommandListID());
         context.resetCommandList(objectWirePipeline->getCommandListID());
         context.resetCommandList(objectSolidPipeline->getCommandListID());
+		context.resetCommandList(screenQuadPipeline->getCommandListID());
     }
 
     // Scene should release all resources, including their pipelines

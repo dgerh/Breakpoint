@@ -3,6 +3,7 @@
 #include "ObjectScene.h"
 #include "PBMPMScene.h"
 #include "FluidScene.h"
+#include "ScreenQuad.h"
 #include "../D3D/Pipeline/RenderPipeline.h"
 #include "../D3D/Pipeline/ComputePipeline.h"
 #include "../D3D/Pipeline/MeshPipeline.h"
@@ -16,12 +17,14 @@ public:
 	RenderPipeline* getObjectSolidPipeline();
 	RenderPipeline* getPBMPMRenderPipeline();
 	MeshPipeline* getFluidMeshPipeline();
+	RenderPipeline* getScreenQuadPipeline();
 
 	void compute(float isMeshShading = false);
 	void drawPBMPM(unsigned int renderMode);
 	void drawFluid(unsigned int renderMeshlets);
 	void drawWireObjects();
 	void drawSolidObjects();
+	void drawScreenQuad();
 
 	void releaseResources();
 
@@ -57,6 +60,9 @@ private:
 	ComputePipeline bufferClearCP;
 	MeshPipeline fluidMeshPipeline;
 	FluidScene fluidScene;
+
+	RenderPipeline screenQuadRP;
+	ScreenQuad screenQuad;
 
 	RenderPipeline* currentRP;
 	ComputePipeline* currentCP;

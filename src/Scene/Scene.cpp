@@ -30,6 +30,9 @@ Scene::Scene(Camera* p_camera, DXContext* context)
 	bufferClearCP("bufferClearRootSignature.cso", "bufferClearComputeShader.cso", *context, CommandListID::FLUID_BUFFER_CLEAR_COMPUTE_ID,
 		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE),
 	fluidScene(context, &fluidRP, &bilevelUniformGridCP, &surfaceBlockDetectionCP, &surfaceCellDetectionCP, &surfaceVertexCompactionCP, &surfaceVertexDensityCP, &surfaceVertexNormalCP, &bufferClearCP, &fluidMeshPipeline),
+	screenQuadRP("ScreenQuadVertexShader.cso", "ScreenQuadPixelShader.cso", "ScreenQuadRootSignature.cso", *context, CommandListID::SCREEN_QUAD_RENDER_ID,
+		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE),
+	screenQuad(context, &screenQuadRP),
 	currentRP(),
 	currentCP()
 {}
@@ -48,6 +51,11 @@ RenderPipeline* Scene::getPBMPMRenderPipeline() {
 
 MeshPipeline* Scene::getFluidMeshPipeline() {
 	return &fluidMeshPipeline;
+}
+
+RenderPipeline* Scene::getScreenQuadPipeline()
+{
+	return &screenQuadRP;
 }
 
 void Scene::compute(float isMeshShading) {
@@ -74,6 +82,11 @@ void Scene::drawWireObjects() {
 
 void Scene::drawSolidObjects() {
 	objectSceneSolid.draw(camera);
+}
+
+void Scene::drawScreenQuad()
+{
+	screenQuad.draw();
 }
 
 void Scene::releaseResources() {

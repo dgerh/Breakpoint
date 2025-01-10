@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <array>
 
-#define NUM_CMDLISTS 26
+#define NUM_CMDLISTS 27
 enum CommandListID {
     OBJECT_RENDER_WIRE_ID,
     OBJECT_RENDER_SOLID_ID,
@@ -27,6 +27,7 @@ enum CommandListID {
     SURFACE_VERTEX_NORMAL_COMPUTE_ID,
     FLUID_BUFFER_CLEAR_COMPUTE_ID,
     FLUID_MESH_ID,
+    SCREEN_QUAD_RENDER_ID,
 
     PBD_Render_ID,
     PBD_ID,
