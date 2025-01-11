@@ -123,7 +123,7 @@ Scene::Scene(Camera* p_camera, DXContext* context)
 		&snowSurfaceVertexDensityCP, &snowSurfaceVertexNormalCP, &snowBufferClearCP, &snowMeshPipeline, 4, 0.010, 7.6, 1.010),*/
 	
 	screenQuadRP("ScreenQuadVertexShader.cso", "ScreenQuadPixelShader.cso", "ScreenQuadRootSignature.cso", *context, CommandListID::SCREEN_QUAD_RENDER_ID,
-		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE),
+		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 2, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE),
 	screenQuad(context, &screenQuadRP),
 	currentRP(),
 	currentCP()
